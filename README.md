@@ -1,20 +1,20 @@
 # a11y-Score open-data example
 
-Minimal Python example that turns the [a11y-Score open data](https://a11yscore.org/open-data) into a short, citizen-facing accessibility summary for a city — with a pivot table of scores and place counts by place type, plus a generated progress text (German).
+Minimal Python example that turns the [a11y-Score open data](https://a11yscore.org/open-data) into a short, citizen-facing accessibility summary for a city — with a pivot table of scores and place counts by place type, plus a generated progress text.
 
 ```console
 $ python mainz_a11y_stats.py
 
-                                  Abdeckung %  Orte gesamt  Orte mit Daten  Score (0-100)
-Ortstyp
-Arbeit                                     62          307             189           94.8
-Soziale Dienste                            66           53              35           93.6
-Bildung                                    62          315             196           93.1
+                                  Coverage %  Places total  Places with data  Score (0-100)
+Place type
+Work and Economy                          62           307               189           94.8
+Social Care                               66            53                35           93.6
+Education                                 62           315               196           93.1
 …
 
-Barrierefreiheit in Mainz: 72 von 100 Punkten (a11y-Score, Stand 01.10.2026). Am
-zugänglichsten sind Orte der Kategorie „Arbeit“ (95 Punkte), den größten
-Handlungsbedarf gibt es bei „Parks und öffentliche Räume“ (32 Punkte). …
+Accessibility in Mainz: 72 of 100 points (a11y-Score, as of 2026-10-01). The most
+accessible places are in the “Work and Economy” category (95 points); the greatest
+need for action is in “Parks and Public Spaces” (32 points). …
 ```
 
 ## Run it

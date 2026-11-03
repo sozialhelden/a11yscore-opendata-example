@@ -31,18 +31,18 @@ def output() -> str:
 
 
 def test_prints_the_summary(output: str):
-    assert re.search(r"Barrierefreiheit in Mainz: \d+ von 100 Punkten", output)
+    assert re.search(r"Accessibility in Mainz: \d+ of 100 points", output)
 
 
 def test_renders_the_pivot_table(output: str):
-    assert "Ortstyp" in output
+    assert "Place type" in output
     assert "Score (0-100)" in output
-    assert "Abdeckung %" in output
+    assert "Coverage %" in output
 
 
 def test_cutoff_categories_are_below_the_completeness_threshold(output: str):
     cutoff = re.search(
-        r"^Nicht bewertet.*?Abdeckung unter 10%\): (.*)$", output, re.MULTILINE
+        r"^Not rated.*?coverage below 10%\): (.*)$", output, re.MULTILINE
     )
     if cutoff:
         percentages = [int(p) for p in re.findall(r"\((\d+)%\)", cutoff.group(1))]

@@ -22,7 +22,7 @@ CITY_WIKIDATA_ID = "Q1720"  # Wikidata ID of Mainz
 MIN_COMPLETENESS = 0.10  # categories with less survey completeness are cut off
 
 rows = duckdb.sql(f"""
-    SELECT dim2_name_de            AS place_type,
+    SELECT dim2_name_en            AS place_type,
            a11yscore,
            d0_x_d1_x_d2_count      AS places_with_data,
            d0_x_d1_count,
@@ -51,8 +51,15 @@ pivot = (
         values=["score", "places_with_data", "places_total", "coverage"],
         aggfunc="first",
     )
-    .rename(columns={"score": "Score (0-100)", "places_with_data": "Orte mit Daten", "places_total": "Orte gesamt", "coverage": "Abdeckung %"})
-    .rename_axis("Ortstyp")
+    .rename(
+        columns={
+            "score": "Score (0-100)",
+            "places_with_data": "Places with data",
+            "places_total": "Places total",
+            "coverage": "Coverage %",
+        }
+    )
+    .rename_axis("Place type")
     .sort_values("Score (0-100)", ascending=False)
 )
 print(pivot.to_string())
@@ -60,25 +67,28 @@ print(pivot.to_string())
 best = confident.loc[confident.score.idxmax()]
 worst = confident.loc[confident.score.idxmin()]
 overall_score = round(total.a11yscore * 100)
-covered = f"{int(total.d0_x_d1_count):,}".replace(",", ".")
-all_places = f"{int(total.n_total):,}".replace(",", ".")
+covered = f"{int(total.d0_x_d1_count):,}"
+all_places = f"{int(total.n_total):,}"
 
 print()
 print(
-    f"Barrierefreiheit in {CITY_NAME}: {overall_score} von 100 Punkten "
-    f"(a11y-Score, Stand {total.updated_at:%d.%m.%Y}). "
-    f"Am zugänglichsten sind Orte der Kategorie „{best.place_type}“ ({best.score:.0f} Punkte), "
-    f"den größten Handlungsbedarf gibt es bei „{worst.place_type}“ ({worst.score:.0f} Punkte). "
-    f"Grundlage sind {covered} Orte mit Barrierefreiheitsdaten von insgesamt "
-    f"{all_places} erfassten Orten — jede Verbesserung in OpenStreetMap "
-    f"aktualisiert diesen Stand täglich."
+    f"Accessibility in {CITY_NAME}: {overall_score} of 100 points "
+    f"(a11y-Score, as of {total.updated_at:%Y-%m-%d}). "
+    f"The most accessible places are in the \u201c{best.place_type}\u201d category "
+    f"({best.score:.0f} points); the greatest need for action is in "
+    f"\u201c{worst.place_type}\u201d ({worst.score:.0f} points). "
+    f"These figures are based on {covered} places with accessibility data out of "
+    f"{all_places} recorded places in total — every improvement in OpenStreetMap "
+    f"updates this status daily."
 )
 if not excluded.empty:
     print(
-        f"Nicht bewertet wegen zu geringer Datengrundlage "
-        f"(Abdeckung unter {MIN_COMPLETENESS:.0%}): "
-        + ", ".join(f"„{r.place_type}“ ({r.coverage}%)" for _, r in excluded.sort_values("coverage").iterrows())
+        f"Not rated due to insufficient data (coverage below {MIN_COMPLETENESS:.0%}): "
+        + ", ".join(
+            f"\u201c{r.place_type}\u201d ({r.coverage}%)"
+            for _, r in excluded.sort_values("coverage").iterrows()
+        )
         + "."
     )
 print()
-print("Quelle: a11y-Score by Sozialhelden e.V., based on data © OpenStreetMap contributors (ODbL)")
+print("Source: a11y-Score by Sozialhelden e.V., based on data © OpenStreetMap contributors (ODbL)")
