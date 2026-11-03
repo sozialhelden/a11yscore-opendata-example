@@ -4,12 +4,19 @@ effort from the a11y-Score open data (regenerated daily).
 
 Usage: pip install duckdb pandas pyarrow && python mainz_a11y_stats.py
 Data:  https://a11yscore.org/open-data
+Set A11YSCORE_PARQUET to run against a local snapshot instead of the live URL
+(the e2e test does this with the pinned dump in data/).
 Attribution: "a11y-Score by Sozialhelden e.V., based on data © OpenStreetMap contributors" (ODbL)
 """
+import os
+
 import duckdb
 import pandas as pd
 
-URL = "https://sozialhelden-opendata.fra1.digitaloceanspaces.com/a11yscore/v1/latest/dimension-combination-metrics.parquet"
+URL = os.environ.get(
+    "A11YSCORE_PARQUET",
+    "https://sozialhelden-opendata.fra1.digitaloceanspaces.com/a11yscore/v1/latest/dimension-combination-metrics.parquet",
+)
 CITY_NAME = "Mainz"
 CITY_WIKIDATA_ID = "Q1720"  # Wikidata ID of Mainz
 MIN_COMPLETENESS = 0.10  # categories with less survey completeness are cut off

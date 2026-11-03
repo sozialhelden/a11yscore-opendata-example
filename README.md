@@ -25,7 +25,16 @@ pip install duckdb pandas pyarrow
 python mainz_a11y_stats.py
 ```
 
-No download required: DuckDB reads the daily Parquet export straight from its URL using HTTP range requests, so only the queried parts are transferred.
+No download required: DuckDB reads the daily Parquet export straight from its URL using HTTP range requests, so only the queried parts are transferred. Set `A11YSCORE_PARQUET` to run against a local file instead.
+
+## Tests
+
+The e2e test runs the script against the pinned Parquet snapshot in `data/` (Git LFS), so it needs no network:
+
+```sh
+pip install pytest
+pytest
+```
 
 ## How it works
 
@@ -39,4 +48,4 @@ Change `CITY_NAME` and `CITY_WIKIDATA_ID` in `mainz_a11y_stats.py` to summarize 
 
 ## Attribution
 
-Data: “a11y-Score by Sozialhelden e.V., based on data © OpenStreetMap contributors”, published under the [ODbL](https://opendatacommons.org/licenses/odbl/1-0/). Region names and Wikidata IDs come from [Wikidata](https://www.wikidata.org) (CC0).
+Data: “a11y-Score by Sozialhelden e.V., based on data © OpenStreetMap contributors”, published under the [ODbL](https://opendatacommons.org/licenses/odbl/1-0/). Region names and Wikidata IDs come from [Wikidata](https://www.wikidata.org) (CC0). The `data/` snapshot (`exported_at 2026-11-03T15:39:21Z`) is a derived database under the same licence.
